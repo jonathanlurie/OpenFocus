@@ -50,9 +50,23 @@ int _stepsToMove = 0;
 
 
 // LED
-const int _ledPin = 13;
+const int _ledPin = 7;
 long _chronoLedStart;
 
+
+// REVERT SWITCH
+const int _revertPin = 6;
+
+
+// INFLUENCE POT
+const int _influencePin = A7;
+// influence min and max are factors (percentages) to influence the delay
+// while the stepper is in action
+const float _influenceMin = 0.1;
+const float _influenceMax = 2.;
+
+
+// ----------------------- SETUP --------------------------------------------
 
 void setup() {
 
@@ -73,7 +87,15 @@ void setup() {
   // LED
   pinMode(_ledPin, OUTPUT);
   digitalWrite(_ledPin, HIGH);
+  
+  // REVERT SWITCH
+  pinMode(_revertPin, INPUT_PULLUP);
 }
+
+
+
+// ----------------------- LOOP --------------------------------------------
+
 
 void loop() {
 
@@ -88,7 +110,7 @@ void loop() {
 
   // TODO
   // reading the switch to revert rotation
-  boolean revertRotation = false;
+  boolean revertRotation = digitalRead(_revertPin)==HIGH;
 
 
   // the stick is pushed or pulled
@@ -108,10 +130,10 @@ void loop() {
       _stepsToMove --;
     }
 
-          Serial.println(_stepsToMove);
+          //Serial.println(_stepsToMove);
 
     // final delay between twoo movings
-    long movingDelay = (float)BASIC_DELAY * 1000.0 * influence * (1.0 / abs(focusStickNormValue) );
+    long movingDelay = (float)BASIC_DELAY * 1000.0 * getInfluence() * (1.0 / abs(focusStickNormValue) );
 
     //Serial.println(movingDelay);
 
@@ -145,6 +167,8 @@ void loop() {
 }
 
 
+// ----------------------- OTHERS --------------------------------------------
+
 // deals with the joystick push button and go back to saved position
 void manageChrono(){
 
@@ -153,16 +177,16 @@ void manageChrono(){
     digitalWrite(_ledPin, LOW);
     _chronoLedStart = millis();
 
-    Serial.println("start chrono");
+    //Serial.println("start chrono");
     _focusStick->startReccordTime();
 
   }else{  // RELEASE event
     // unblink the led
     digitalWrite(_ledPin, HIGH);
 
-    Serial.println("stop chrono");
+    //Serial.println("stop chrono");
     boolean isLongPressed = _focusStick->stopReccordTime();
-    Serial.println(isLongPressed);
+    //Serial.println(isLongPressed);
 
 
     if(isLongPressed){ // LONG PRESS
@@ -178,7 +202,7 @@ void manageChrono(){
         return;
       }
 
-      Serial.println(_stepsToMove);
+      //Serial.println(_stepsToMove);
 
       // go to the position previously reccorded
 
@@ -199,4 +223,16 @@ void manageChrono(){
 
   }
 
+}
+
+// return a factor between _influenceMin and _influenceMax depending
+// on the influence pot value
+float getInfluence(){
+  float potValue = analogRead(_influencePin);
+  float factor = (potValue/1023.) * (_influenceMax - _influenceMin) + _influenceMin;
+  
+  Serial.println(factor);
+  
+  return factor;
+  
 }
