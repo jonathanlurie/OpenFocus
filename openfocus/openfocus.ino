@@ -1,7 +1,7 @@
 /*
 OpenFocus
 =============
-Copyright (c) 2013, Jonathan LURIE, All rights reserved.
+Copyright (c) 2015, Jonathan LURIE, All rights reserved.
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
@@ -11,7 +11,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
-License along with this library. 
+License along with this library.
 */
 
 
@@ -87,7 +87,7 @@ void setup() {
   // LED
   pinMode(_ledPin, OUTPUT);
   digitalWrite(_ledPin, HIGH);
-  
+
   // REVERT SWITCH
   pinMode(_revertPin, INPUT_PULLUP);
 }
@@ -230,9 +230,9 @@ void manageChrono(){
 float getInfluence(){
   float potValue = analogRead(_influencePin);
   float factor = (potValue/1023.) * (_influenceMax - _influenceMin) + _influenceMin;
-  
+
   Serial.println(factor);
-  
+
   return factor;
-  
+
 }
