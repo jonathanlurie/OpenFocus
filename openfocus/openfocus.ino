@@ -90,6 +90,7 @@ void setup() {
 
   // REVERT SWITCH
   pinMode(_revertPin, INPUT_PULLUP);
+
 }
 
 
@@ -135,7 +136,7 @@ void loop() {
     // final delay between twoo movings
     long movingDelay = (float)BASIC_DELAY * 1000.0 * getInfluence() * (1.0 / abs(focusStickNormValue) );
 
-    //Serial.println(movingDelay);
+    Serial.println("MovingDelay: " + String(movingDelay));
 
     _motor.renegateQuarterStep();
    // _motor.renegateStep();
@@ -231,7 +232,7 @@ float getInfluence(){
   float potValue = analogRead(_influencePin);
   float factor = (potValue/1023.) * (_influenceMax - _influenceMin) + _influenceMin;
 
-  Serial.println(factor);
+  //Serial.println("Inluence: " + String(factor));
 
   return factor;
 
